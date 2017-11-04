@@ -34,11 +34,13 @@ func (w *Writer) setDefaults() {
 }
 
 // Write writes a byte slice to w.
-func (w *Writer) Write(b []byte) {
+func (w *Writer) Write(b []byte) int {
 	if w.err != nil {
-		return
+		return 0
 	}
-	w.check(w.W.Write(b))
+	n, err := w.W.Write(b)
+	w.check(n, err)
+	return n
 }
 
 func (w *Writer) WriteUint8(u uint8) {
