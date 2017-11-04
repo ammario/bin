@@ -3,7 +3,11 @@ package bin_test
 import (
 	"bytes"
 	"encoding/binary"
+	"io/ioutil"
+	"os"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/ammario/bin"
 	"github.com/stretchr/testify/assert"
@@ -24,12 +28,21 @@ func TestWriter(t *testing.T) {
 		wr.WriteInt16(0x1122)
 		assert.Equal(t, []byte{0x11, 0x22}, buf.Bytes())
 	})
-	t.Run("Keeps proper count", func(t *testing.T) {
-		buf := &bytes.Buffer{}
-		wr := &bin.Writer{W: buf}
+	t.Run("Keeps first non-nil error and proper count", func(t *testing.T) {
+		fi, err := ioutil.TempFile("", "bintest")
+		require.NoError(t, err)
+		defer os.Remove(fi.Name())
 
+		wr := &bin.Writer{W: fi}
 		wr.Write([]byte("123456"))
 		assert.Equal(t, 6, wr.N())
+		assert.NoError(t, wr.Err())
+		fi.Close()
+
+		wr.Write([]byte("this doesn't get written"))
+		assert.Equal(t, 6, wr.N())
+		assert.Error(t, wr.Err())
+
 	})
 	t.Run("WriteInts", func(t *testing.T) {
 		run := func(t *testing.T, name string, tf func(t *testing.T, buf *bytes.Buffer, wr *bin.Writer)) {
