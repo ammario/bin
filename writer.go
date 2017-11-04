@@ -42,7 +42,6 @@ func (w *Writer) Write(b []byte) {
 }
 
 func (w *Writer) WriteUint8(u uint8) {
-	w.setDefaults()
 	w.scratch[0] = u
 	w.Write(w.scratch[:1])
 }
@@ -86,7 +85,12 @@ func (w *Writer) N() int {
 	return w.n
 }
 
-// Reset resets the internal byte written count and error.
+// Err returns the last non-nil error.
+func (w *Writer) Err() error {
+	return w.err
+}
+
+// Reset resets the internal byte count and error.
 func (w *Writer) Reset() {
 	w.n = 0
 	w.err = nil
