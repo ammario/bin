@@ -44,7 +44,7 @@ func TestWriter(t *testing.T) {
 		assert.Error(t, wr.Err())
 
 	})
-	t.Run("WriteInts", func(t *testing.T) {
+	t.Run("Ints", func(t *testing.T) {
 		run := func(t *testing.T, name string, tf func(t *testing.T, buf *bytes.Buffer, wr *bin.Writer)) {
 			t.Run(name, func(t *testing.T) {
 				buf := &bytes.Buffer{}

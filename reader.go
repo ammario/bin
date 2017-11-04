@@ -33,8 +33,13 @@ func (rd *Reader) setDefaults() {
 	}
 }
 
-func (rd *Reader) Read(p []byte) {
-	rd.check(rd.R.Read(p))
+func (rd *Reader) Read(p []byte) int {
+	if rd.err != nil {
+		return 0
+	}
+	n, err := rd.R.Read(p)
+	rd.check(n, err)
+	return n
 }
 
 func (rd *Reader) ReadUint8(u *uint8) {
