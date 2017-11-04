@@ -34,6 +34,7 @@ func (w *Writer) setDefaults() {
 }
 
 // Write writes a byte slice to w.
+// It returns the amount of bytes written by this call.
 func (w *Writer) Write(b []byte) int {
 	if w.err != nil {
 		return 0

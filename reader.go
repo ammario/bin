@@ -33,6 +33,8 @@ func (rd *Reader) setDefaults() {
 	}
 }
 
+// Read reads into p.
+// It returns the amount of bytes read by this call.
 func (rd *Reader) Read(p []byte) int {
 	if rd.err != nil {
 		return 0
