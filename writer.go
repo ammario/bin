@@ -67,6 +67,14 @@ func (w *Writer) Uint64(u uint64) {
 	w.Write(w.scratch[:8])
 }
 
+func (w *Writer) Uvarint(u uint64) {
+	w.Write(w.scratch[:binary.PutUvarint(w.scratch[:], u)])
+}
+
+func (w *Writer) Varint(u int64) {
+	w.Write(w.scratch[:binary.PutVarint(w.scratch[:], u)])
+}
+
 func (w *Writer) Int8(u int8) {
 	w.Uint8(uint8(u))
 }

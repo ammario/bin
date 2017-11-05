@@ -73,5 +73,72 @@ func TestWriter(t *testing.T) {
 			assert.Equal(t, 8, buf.Len())
 			assert.Equal(t, []byte{0x00, 0x11, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}, buf.Bytes())
 		})
+		run(t, "Uvarint", func(t *testing.T, buf *bytes.Buffer, wr *bin.Writer) {
+			wr.Uvarint(0x11)
+			assert.Equal(t, 1, buf.Len())
+			assert.Equal(t, []byte{0x11}, buf.Bytes())
+		})
+		run(t, "Varint", func(t *testing.T, buf *bytes.Buffer, wr *bin.Writer) {
+			wr.Uvarint(0x0FAB)
+			assert.Equal(t, 2, buf.Len())
+			assert.Equal(t, []byte{0xab, 0x1f}, buf.Bytes())
+		})
+	})
+}
+
+func BenchmarkWriter(b *testing.B) {
+	buf := bytes.NewBuffer(make([]byte, 1024*1024))
+	wr := &bin.Writer{W: buf}
+
+	b.Run("Uint8", func(b *testing.B) {
+		b.SetBytes(1)
+		for i := 0; i < b.N; i++ {
+			wr.Uint8(uint8(i))
+		}
+		b.StopTimer()
+		buf.Reset()
+	})
+	b.Run("Uint64", func(b *testing.B) {
+		b.SetBytes(8)
+		for i := 0; i < b.N; i++ {
+			wr.Uint64(uint64(i))
+		}
+		b.StopTimer()
+		buf.Reset()
+	})
+	b.Run("Uvarint", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			wr.Uvarint(uint64(i))
+		}
+		b.StopTimer()
+		buf.Reset()
+	})
+}
+
+func BenchmarkEncodingBinaryWriter(b *testing.B) {
+	buf := bytes.NewBuffer(make([]byte, 1024*1024))
+
+	b.Run("Uint8", func(b *testing.B) {
+		b.SetBytes(1)
+		for i := 0; i < b.N; i++ {
+			binary.Write(buf, binary.LittleEndian, uint8(i))
+		}
+		b.StopTimer()
+		buf.Reset()
+	})
+	b.Run("Uint64", func(b *testing.B) {
+		b.SetBytes(8)
+		for i := 0; i < b.N; i++ {
+			binary.Write(buf, binary.LittleEndian, uint64(i))
+		}
+		b.StopTimer()
+		buf.Reset()
+	})
+	b.Run("Uvarint", func(b *testing.B) {
+		var scratch [8]byte
+		for i := 0; i < b.N; i++ {
+			n := binary.PutUvarint(scratch[:], uint64(i))
+			buf.Write(scratch[:n])
+		}
 	})
 }

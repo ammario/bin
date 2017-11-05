@@ -8,8 +8,12 @@ import (
 // Reader wraps an io.Reader.
 // The last non-nil error is located in Err().
 // The total amount of bytes read is located in N().
+//
+// R must not be changed after first usage.
 type Reader struct {
 	R io.Reader
+
+	byteRdr io.ByteReader
 
 	// Endianness will default to binary.LittleEndian.
 	Endianness binary.ByteOrder
@@ -100,6 +104,35 @@ func (rd *Reader) Int64(u *int64) {
 	rd.Read(rd.scratch[:8])
 	if rd.err == nil {
 		*u = int64(rd.Endianness.Uint64(rd.scratch[:]))
+	}
+}
+
+func (rd *Reader) byteReader() io.ByteReader {
+	if rd.byteRdr != nil {
+		return rd.byteRdr
+	}
+
+	var ok bool
+	if rd.byteRdr, ok = rd.R.(io.ByteReader); !ok {
+		rd.byteRdr = &byteReader{R: rd.R}
+	}
+
+	return rd.byteRdr
+}
+
+func (rd *Reader) Varint(u *int64) {
+	nn, err := binary.ReadVarint(rd.byteReader())
+	rd.check(0, err)
+	if rd.err == nil {
+		*u = nn
+	}
+}
+
+func (rd *Reader) Uvarint(u *uint64) {
+	nn, err := binary.ReadUvarint(rd.byteReader())
+	rd.check(0, err)
+	if rd.err == nil {
+		*u = nn
 	}
 }
 
