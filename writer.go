@@ -44,43 +44,43 @@ func (w *Writer) Write(b []byte) int {
 	return n
 }
 
-func (w *Writer) WriteUint8(u uint8) {
+func (w *Writer) Uint8(u uint8) {
 	w.scratch[0] = u
 	w.Write(w.scratch[:1])
 }
 
-func (w *Writer) WriteUint16(u uint16) {
+func (w *Writer) Uint16(u uint16) {
 	w.setDefaults()
 	w.Endianness.PutUint16(w.scratch[:], u)
 	w.Write(w.scratch[:2])
 }
 
-func (w *Writer) WriteUint32(u uint32) {
+func (w *Writer) Uint32(u uint32) {
 	w.setDefaults()
 	w.Endianness.PutUint32(w.scratch[:], u)
 	w.Write(w.scratch[:4])
 }
 
-func (w *Writer) WriteUint64(u uint64) {
+func (w *Writer) Uint64(u uint64) {
 	w.setDefaults()
 	w.Endianness.PutUint64(w.scratch[:], u)
 	w.Write(w.scratch[:8])
 }
 
-func (w *Writer) WriteInt8(u int8) {
-	w.WriteUint8(uint8(u))
+func (w *Writer) Int8(u int8) {
+	w.Uint8(uint8(u))
 }
 
-func (w *Writer) WriteInt16(u int16) {
-	w.WriteUint16(uint16(u))
+func (w *Writer) Int16(u int16) {
+	w.Uint16(uint16(u))
 }
 
-func (w *Writer) WriteInt32(u int32) {
-	w.WriteUint32(uint32(u))
+func (w *Writer) Int32(u int32) {
+	w.Uint32(uint32(u))
 }
 
-func (w *Writer) WriteInt64(u int64) {
-	w.WriteUint64(uint64(u))
+func (w *Writer) Int64(u int64) {
+	w.Uint64(uint64(u))
 }
 
 // N returns the number of bytes successfully written.

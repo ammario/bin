@@ -44,14 +44,14 @@ func (rd *Reader) Read(p []byte) int {
 	return n
 }
 
-func (rd *Reader) ReadUint8(u *uint8) {
+func (rd *Reader) Uint8(u *uint8) {
 	rd.Read(rd.scratch[:1])
 	if rd.err == nil {
 		*u = rd.scratch[0]
 	}
 }
 
-func (rd *Reader) ReadUint16(u *uint16) {
+func (rd *Reader) Uint16(u *uint16) {
 	rd.Read(rd.scratch[:2])
 	if rd.err == nil {
 		rd.setDefaults()
@@ -59,7 +59,7 @@ func (rd *Reader) ReadUint16(u *uint16) {
 	}
 }
 
-func (rd *Reader) ReadUint32(u *uint32) {
+func (rd *Reader) Uint32(u *uint32) {
 	rd.Read(rd.scratch[:4])
 	if rd.err == nil {
 		rd.setDefaults()
@@ -67,7 +67,7 @@ func (rd *Reader) ReadUint32(u *uint32) {
 	}
 }
 
-func (rd *Reader) ReadUint64(u *uint64) {
+func (rd *Reader) Uint64(u *uint64) {
 	rd.Read(rd.scratch[:8])
 	if rd.err == nil {
 		rd.setDefaults()
@@ -75,28 +75,28 @@ func (rd *Reader) ReadUint64(u *uint64) {
 	}
 }
 
-func (rd *Reader) ReadInt8(u *int8) {
+func (rd *Reader) Int8(u *int8) {
 	rd.Read(rd.scratch[:1])
 	if rd.err == nil {
 		*u = int8(rd.scratch[0])
 	}
 }
 
-func (rd *Reader) ReadInt16(u *int16) {
+func (rd *Reader) Int16(u *int16) {
 	rd.Read(rd.scratch[:2])
 	if rd.err == nil {
 		*u = int16(rd.Endianness.Uint16(rd.scratch[:]))
 	}
 }
 
-func (rd *Reader) ReadInt32(u *int32) {
+func (rd *Reader) Int32(u *int32) {
 	rd.Read(rd.scratch[:4])
 	if rd.err == nil {
 		*u = int32(rd.Endianness.Uint32(rd.scratch[:]))
 	}
 }
 
-func (rd *Reader) ReadInt64(u *int64) {
+func (rd *Reader) Int64(u *int64) {
 	rd.Read(rd.scratch[:8])
 	if rd.err == nil {
 		*u = int64(rd.Endianness.Uint64(rd.scratch[:]))
