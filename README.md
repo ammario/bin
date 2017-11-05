@@ -5,6 +5,9 @@
 
 A simple, ergonomic wrapper around `encoding/binary`.
 
+I made this for writing encoders/decoders for structs, where the error usually has enough information
+without context about which field encoding/decoding failed on.
+
 It provides a `Writer` and `Reader` type.
 Once an error is encountered, further Write or Read calls will be no-op and the error will be located in `Err()`.
 
